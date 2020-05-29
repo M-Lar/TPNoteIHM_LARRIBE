@@ -13,6 +13,7 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Button;
 import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -49,54 +50,55 @@ public class Controller {
     Rectangle rectangle = null;
     Ellipse ellipse = null;
     ArrayList<Shape> formes = new ArrayList<Shape>();
-    
-    double x;
-    double y;
+    Shape formeSelect;
+    Shape formeSave;
+    boolean isSelct =false;
     
     @FXML
     public void initialize(){
     	
-    	RbtnSelect.setOnMouseClicked(event -> {
-    		System.out.println("Select");
-        });
-    	
-    	/*
-    	RbtnElipse.setOnMouseClicked(event -> {
-    		System.out.println("Elipse");
-        });
-    	RbtnRect.setOnMouseClicked(event -> {
-    		System.out.println("Rect");
-        });
-    	RbtnLine.setOnMouseClicked(event -> {
-    		System.out.println("Line");
-    		
-        });*/
-    	drawShapes();
-    	
-    	
-    	 
-		
-    	
-    	
-
-    	colorPicker.setOnAction(event -> {
-    		System.out.println(colorPicker.getValue());
-        });
-    	
-    	
+    	RbtnSelect.setOnMouseClicked(event -> {  System.out.println("Select");  });
+    	colorPicker.setOnAction(event -> {  System.out.println(colorPicker.getValue());  });
     	btnDelete.setOnMouseClicked(event -> {
     		System.out.println("Delete");
     		paneID.getChildren().clear();
         });
-    	btnClone.setOnMouseClicked(event -> {
-    		System.out.println("Clone");
+    	btnClone.setOnMouseClicked(event -> {  System.out.println("Clone");  });
+    	
+    	
+    	/*
+    	line.setOnMouseClicked(event -> {
+    		formeSelect.setStrokeWidth(3);
         });
     	
+    	rec.setOnMouseClicked(event -> {
 
+    		if (formeSelect instanceof Line) {
+    			formeSelect.setStrokeWidth(3);
+    		} else {
+    			formeSelect.setStroke(Color.BLUEVIOLET);
+    		}
+        });*/
+    	
+    	drawShapes();
+    	
+    	/*
+    	paneID.setOnMouseClicked(event -> {
+    		if(RbtnSelect.isSelected()) formeSelect.setStroke(Color.BLUEVIOLET);
+        });*/
     }
     
+    //formeSelect.setStrokeWidth(3);
+    //formeSelect.setStroke(Color.BLUEVIOLET);
+
+	
+	public void move() {
+		
+	}
+    
+    
     public void drawShapes() {
-    	System.out.println("hello");
+    	//System.out.println("hello");
 		paneID.setOnMouseClicked(event -> {
 			//System.out.println(RbtnLine.isSelected());
 			if(RbtnLine.isSelected()) {
@@ -105,46 +107,84 @@ public class Controller {
     				line.setStroke(colorPicker.getValue());
     	            paneID.getChildren().add(line);
     			} else {
+    				line.setOnMouseClicked(new EventHandler <MouseEvent>() {
+    		        	public void handle(MouseEvent event){
+    		        		formeSelect= (Shape) event.getSource();
+    		        		formeSave=formeSelect;
+		        			formeSelect.setStroke(Color.BLUEVIOLET);
+    		        		isSelct = true;
+    		        	}
+    		        });
+    				formes.add(line);
     				line = null;
-    				formes.add((Shape)line);
     			}
+    			
+    			
 			} else if (RbtnRect.isSelected()) {
 				if(rectangle == null) {
-					x= event.getX(); y= event.getY();
-					rectangle = new Rectangle(x, y, 1, 1);
+					rectangle = new Rectangle(event.getX(), event.getY(), 1, 1);
 					rectangle.setFill(colorPicker.getValue());
     	            paneID.getChildren().add(rectangle);
     			} else {
+    				rectangle.setOnMouseClicked(new EventHandler <MouseEvent>() {
+    		        	public void handle(MouseEvent event){
+    		        		formeSelect= (Shape) event.getSource();
+    		        		formeSave=formeSelect;
+		        			formeSelect.setStroke(Color.BLUEVIOLET);
+    		        		isSelct = true;
+		        			
+    		        	}
+    		        });
+    				formes.add(rectangle);
     				rectangle = null;
-    				formes.add((Shape)rectangle);
     			}
+				
 				
 			} else if (RbtnElipse.isSelected()) {
 				if(ellipse == null) {
-					System.out.println("1");
+					//System.out.println("1");
 					ellipse = new Ellipse(event.getX(), event.getY(), 1, 1);
-					System.out.println("2");
+					//System.out.println("2");
 					ellipse.setFill(colorPicker.getValue());
-					System.out.println("3");
+					//System.out.println(paneID);
     	            paneID.getChildren().add(ellipse);
     			} else {
+    				ellipse.setOnMouseClicked(new EventHandler <MouseEvent>() {
+    		        	public void handle(MouseEvent event){
+    		        		if(RbtnSelect.isSelected()) {
+    		        			formeSelect= (Shape) event.getSource();
+    		        			formeSave=formeSelect;
+    		        			formeSelect.setStroke(Color.BLUEVIOLET);
+        		        		isSelct = true;
+    		        		}
+    		        	}
+    		        });
+    				formes.add(ellipse);
     				ellipse = null;
-    				formes.add((Shape)ellipse);
     			}
+			} else if(RbtnSelect.isSelected() && isSelct) {
+				formeSelect=formeSave;
+				isSelct=false;
 			}
 		});
    		
+		
+		
    		paneID.setOnMouseMoved(event -> {
   			if(RbtnLine.isSelected()) {
 	   	        if (line != null) {
 	   	            line.setEndX(event.getX());
 	   	            line.setEndY(event.getY());
 	   	        }
+	   	        
+	   	        
   			} else if (RbtnRect.isSelected()) {
   				if (rectangle != null) {
   					rectangle.setWidth(event.getX()-rectangle.getX());
   					rectangle.setHeight(event.getY()-rectangle.getY());
 	   	        }
+  				
+  				
 			} else if (RbtnElipse.isSelected()) {
 				if (ellipse != null) {
 					ellipse.setRadiusX(Math.abs(event.getX()-ellipse.getCenterX()));
