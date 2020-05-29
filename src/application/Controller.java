@@ -19,7 +19,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.input.MouseEvent;
 
-import formes.*;
 
 
 import java.io.File;
@@ -49,7 +48,7 @@ public class Controller {
     Line line = null;
     Rectangle rectangle = null;
     Ellipse ellipse = null;
-    ArrayList<Shape> formes;
+    ArrayList<Shape> formes = new ArrayList<Shape>();
     
     double x;
     double y;
@@ -61,79 +60,22 @@ public class Controller {
     		System.out.println("Select");
         });
     	
-    	
+    	/*
     	RbtnElipse.setOnMouseClicked(event -> {
     		System.out.println("Elipse");
         });
     	RbtnRect.setOnMouseClicked(event -> {
-    		System.out.println("Rect"+ RbtnLine.isSelected());
+    		System.out.println("Rect");
         });
     	RbtnLine.setOnMouseClicked(event -> {
-    		System.out.println("Line"+ RbtnLine.isSelected());
+    		System.out.println("Line");
     		
-        });
-    	drawLine();
+        });*/
+    	drawShapes();
     	
     	
     	 
-		System.out.println("hello");
-		paneID.setOnMouseClicked(event -> {
-			//System.out.println(RbtnLine.isSelected());
-			if(RbtnLine.isSelected()) {
-    			if(line == null) {
-    				line = new Ligne(event.getX(), event.getY(), event.getX(), event.getY());
-    				line.setStroke(colorPicker.getValue());
-    	            paneID.getChildren().add(line);
-    			} else {
-    				line = null;
-    			}
-			} else if (RbtnRect.isSelected()) {
-				if(rectangle == null) {
-					x= event.getX(); y= event.getY();
-					rectangle = new Rect(x, y, 1, 1);
-					rectangle.setFill(colorPicker.getValue());
-    	            paneID.getChildren().add(rectangle);
-    			} else {
-    				rectangle = null;
-    			}
-				
-			} else if (RbtnElipse.isSelected()) {
-				if(ellipse == null) {
-					System.out.println("1");
-					ellipse = new Elli(event.getX(), event.getY(), 1, 1);
-					System.out.println("2");
-					ellipse.setFill(colorPicker.getValue());
-					System.out.println("3");
-    	            paneID.getChildren().add(ellipse);
-    			} else {
-    				ellipse = null;
-    			}
-			}
-		});
-   		
-   		paneID.setOnMouseMoved(event -> {
-  			if(RbtnLine.isSelected()) {
-	   	        if (line != null) {
-	   	            line.setEndX(event.getX());
-	   	            line.setEndY(event.getY());
-	   	        }
-  			} else if (RbtnRect.isSelected()) {
-  				if (rectangle != null) {
-  					//System.out.println(x+" "+event.getX());
-  					//System.out.println(y+" "+event.getY());
-  					//if(event.getX()<x) rectangle.setX(event.getX());
-  					rectangle.setWidth(event.getX()-rectangle.getX());
-  					//if(event.getY()<y) rectangle.setY(event.getY());
-  					rectangle.setHeight(event.getY()-rectangle.getY());
-	   	        }
-			} else if (RbtnElipse.isSelected()) {
-				if (ellipse != null) {
-					ellipse.setRadiusX(Math.abs(event.getX()-ellipse.getCenterX()));
-					ellipse.setRadiusY(Math.abs(event.getY()-ellipse.getCenterY()));
-					//formes.add(arg0)
-				}
-			}
-   	    });
+		
     	
     	
 
@@ -153,7 +95,62 @@ public class Controller {
 
     }
     
-    public void drawLine() {
-    	
+    public void drawShapes() {
+    	System.out.println("hello");
+		paneID.setOnMouseClicked(event -> {
+			//System.out.println(RbtnLine.isSelected());
+			if(RbtnLine.isSelected()) {
+    			if(line == null) {
+    				line = new Line(event.getX(), event.getY(), event.getX(), event.getY());
+    				line.setStroke(colorPicker.getValue());
+    	            paneID.getChildren().add(line);
+    			} else {
+    				line = null;
+    				formes.add((Shape)line);
+    			}
+			} else if (RbtnRect.isSelected()) {
+				if(rectangle == null) {
+					x= event.getX(); y= event.getY();
+					rectangle = new Rectangle(x, y, 1, 1);
+					rectangle.setFill(colorPicker.getValue());
+    	            paneID.getChildren().add(rectangle);
+    			} else {
+    				rectangle = null;
+    				formes.add((Shape)rectangle);
+    			}
+				
+			} else if (RbtnElipse.isSelected()) {
+				if(ellipse == null) {
+					System.out.println("1");
+					ellipse = new Ellipse(event.getX(), event.getY(), 1, 1);
+					System.out.println("2");
+					ellipse.setFill(colorPicker.getValue());
+					System.out.println("3");
+    	            paneID.getChildren().add(ellipse);
+    			} else {
+    				ellipse = null;
+    				formes.add((Shape)ellipse);
+    			}
+			}
+		});
+   		
+   		paneID.setOnMouseMoved(event -> {
+  			if(RbtnLine.isSelected()) {
+	   	        if (line != null) {
+	   	            line.setEndX(event.getX());
+	   	            line.setEndY(event.getY());
+	   	        }
+  			} else if (RbtnRect.isSelected()) {
+  				if (rectangle != null) {
+  					rectangle.setWidth(event.getX()-rectangle.getX());
+  					rectangle.setHeight(event.getY()-rectangle.getY());
+	   	        }
+			} else if (RbtnElipse.isSelected()) {
+				if (ellipse != null) {
+					ellipse.setRadiusX(Math.abs(event.getX()-ellipse.getCenterX()));
+					ellipse.setRadiusY(Math.abs(event.getY()-ellipse.getCenterY()));
+				}
+			}
+   	    });
     }
 }
